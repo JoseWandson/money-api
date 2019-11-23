@@ -21,6 +21,7 @@ public class Categoria {
 	@EqualsAndHashCode.Include
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
+
 	private String nome;
 
 }

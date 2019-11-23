@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,8 @@ public class CategoriaResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<Categoria> criar(@RequestBody CategoriaDTO categoriaDTO, HttpServletResponse response) {
+	public ResponseEntity<Categoria> criar(@Valid @RequestBody CategoriaDTO categoriaDTO,
+			HttpServletResponse response) {
 		Categoria categoria = modelMapper.map(categoriaDTO, Categoria.class);
 		Categoria categoriaSalva = categoriaRepository.save(categoria);
 
