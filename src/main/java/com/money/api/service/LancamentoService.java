@@ -23,4 +23,8 @@ public class LancamentoService {
 		return lancamentoRepository.findById(codigo);
 	}
 
+	public Lancamento criar(Lancamento lancamento) {
+		return lancamentoRepository.save(lancamento);
+	}
+
 }
