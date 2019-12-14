@@ -1,9 +1,10 @@
 package com.money.api.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.money.api.model.Lancamento;
@@ -22,8 +23,8 @@ public class LancamentoService {
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
-	public List<Lancamento> pesquisar(LancamentoFilter lancamentoFilter) {
-		return lancamentoRepository.filtrar(lancamentoFilter);
+	public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		return lancamentoRepository.filtrar(lancamentoFilter, pageable);
 	}
 
 	public Optional<Lancamento> buscarPeloCodigo(Long codigo) {
