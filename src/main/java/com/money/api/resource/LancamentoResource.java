@@ -31,6 +31,7 @@ import com.money.api.event.RecursoCriadoEvent;
 import com.money.api.exceptionhandler.MoneyExceptionHandler.Erro;
 import com.money.api.model.Lancamento;
 import com.money.api.repository.filter.LancamentoFilter;
+import com.money.api.repository.projection.ResumoLancamento;
 import com.money.api.service.LancamentoService;
 import com.money.api.service.exception.PessoaInexistenteOuInativaException;
 
@@ -54,6 +55,12 @@ public class LancamentoResource {
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		return lancamentoService.pesquisar(lancamentoFilter, pageable);
+	}
+
+	@GetMapping(params = "resumo")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		return lancamentoService.resumir(lancamentoFilter, pageable);
 	}
 
 	@GetMapping("/{codigo}")

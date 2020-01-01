@@ -12,6 +12,7 @@ import com.money.api.model.Pessoa;
 import com.money.api.repository.LancamentoRepository;
 import com.money.api.repository.PessoaRepository;
 import com.money.api.repository.filter.LancamentoFilter;
+import com.money.api.repository.projection.ResumoLancamento;
 import com.money.api.service.exception.PessoaInexistenteOuInativaException;
 
 @Service
@@ -25,6 +26,10 @@ public class LancamentoService {
 
 	public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		return lancamentoRepository.filtrar(lancamentoFilter, pageable);
+	}
+
+	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		return lancamentoRepository.resumir(lancamentoFilter, pageable);
 	}
 
 	public Optional<Lancamento> buscarPeloCodigo(Long codigo) {
