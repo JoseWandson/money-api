@@ -7,9 +7,13 @@ import javax.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import com.money.api.config.property.MoneyApiProperty;
+
 @SpringBootApplication
+@EnableConfigurationProperties(MoneyApiProperty.class)
 public class MoneyApiApplication {
 
 	@PostConstruct
