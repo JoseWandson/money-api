@@ -1,5 +1,6 @@
 package com.money.api.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -19,7 +20,9 @@ import lombok.Setter;
 @Setter
 @Table(name = "usuario")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Usuario {
+public class Usuario implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@EqualsAndHashCode.Include

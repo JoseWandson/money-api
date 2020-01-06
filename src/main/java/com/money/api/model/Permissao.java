@@ -1,5 +1,7 @@
 package com.money.api.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -13,7 +15,9 @@ import lombok.Setter;
 @Setter
 @Table(name = "permissao")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Permissao {
+public class Permissao implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@EqualsAndHashCode.Include
