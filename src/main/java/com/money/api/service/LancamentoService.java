@@ -2,12 +2,14 @@ package com.money.api.service;
 
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.money.api.model.Lancamento;
+import com.money.api.model.Lancamento_;
 import com.money.api.model.Pessoa;
 import com.money.api.repository.LancamentoRepository;
 import com.money.api.repository.PessoaRepository;
@@ -37,15 +39,30 @@ public class LancamentoService {
 	}
 
 	public Lancamento criar(Lancamento lancamento) {
-		Optional<Pessoa> pessoaOptional = pessoaRepository.findById(lancamento.getPessoa().getCodigo());
-		if (!pessoaOptional.isPresent() || pessoaOptional.get().isInativo()) {
-			throw new PessoaInexistenteOuInativaException();
-		}
+		validarPessoa(lancamento);
 		return lancamentoRepository.save(lancamento);
 	}
 
 	public void remover(Long codigo) {
 		lancamentoRepository.deleteById(codigo);
+	}
+
+	public Lancamento atualizar(Long codigo, Lancamento lancamento) {
+		Lancamento lancamentoSalvo = buscarPeloCodigo(codigo).orElseThrow(IllegalArgumentException::new);
+		if (!lancamento.getPessoa().equals(lancamentoSalvo.getPessoa())) {
+			validarPessoa(lancamento);
+		}
+
+		BeanUtils.copyProperties(lancamento, lancamentoSalvo, Lancamento_.codigo.getName());
+
+		return lancamentoRepository.save(lancamentoSalvo);
+	}
+
+	private void validarPessoa(Lancamento lancamento) {
+		Optional<Pessoa> pessoaOptional = pessoaRepository.findById(lancamento.getPessoa().getCodigo());
+		if (!pessoaOptional.isPresent() || pessoaOptional.get().isInativo()) {
+			throw new PessoaInexistenteOuInativaException();
+		}
 	}
 
 }

@@ -23,8 +23,12 @@ public class LancamentoDTO {
 	@NotNull
 	private LocalDate dataVencimento;
 
+	private LocalDate dataPagamento;
+
 	@NotNull
 	private BigDecimal valor;
+
+	private String observacao;
 
 	@NotNull
 	private TipoLancamento tipo;
