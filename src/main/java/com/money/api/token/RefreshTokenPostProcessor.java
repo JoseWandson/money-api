@@ -1,5 +1,8 @@
 package com.money.api.token;
 
+import java.lang.reflect.Method;
+import java.util.Optional;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +30,7 @@ public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Acces
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-		return returnType.getMethod().getName().equals("postAccessToken");
+		return Optional.ofNullable(returnType.getMethod()).map(Method::getName).equals(Optional.of("postAccessToken"));
 	}
 
 	@Override
