@@ -1,5 +1,7 @@
 package com.money.api.service;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -8,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.money.api.dto.LancamentoEstatisticaCategoria;
 import com.money.api.model.Lancamento;
 import com.money.api.model.Lancamento_;
 import com.money.api.model.Pessoa;
@@ -56,6 +59,10 @@ public class LancamentoService {
 		BeanUtils.copyProperties(lancamento, lancamentoSalvo, Lancamento_.codigo.getName());
 
 		return lancamentoRepository.save(lancamentoSalvo);
+	}
+
+	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate mesReferencia) {
+		return lancamentoRepository.porCategoria(mesReferencia);
 	}
 
 	private void validarPessoa(Lancamento lancamento) {
