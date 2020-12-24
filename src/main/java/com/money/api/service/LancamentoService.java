@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.money.api.dto.LancamentoEstatisticaCategoria;
+import com.money.api.dto.LancamentoEstatisticaDia;
 import com.money.api.model.Lancamento;
 import com.money.api.model.Lancamento_;
 import com.money.api.model.Pessoa;
@@ -63,6 +64,10 @@ public class LancamentoService {
 
 	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate mesReferencia) {
 		return lancamentoRepository.porCategoria(mesReferencia);
+	}
+
+	public List<LancamentoEstatisticaDia> porDia(LocalDate mesReferencia) {
+		return lancamentoRepository.porDia(mesReferencia);
 	}
 
 	private void validarPessoa(Lancamento lancamento) {

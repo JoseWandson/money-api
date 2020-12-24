@@ -1,7 +1,6 @@
 package com.money.api.resource;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.money.api.dto.LancamentoDTO;
 import com.money.api.dto.LancamentoEstatisticaCategoria;
+import com.money.api.dto.LancamentoEstatisticaDia;
 import com.money.api.event.RecursoCriadoEvent;
 import com.money.api.exceptionhandler.MoneyExceptionHandler.Erro;
 import com.money.api.model.Lancamento;
@@ -77,7 +77,13 @@ public class LancamentoResource {
 	@GetMapping("/estatisticas/por-categoria")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public List<LancamentoEstatisticaCategoria> porCategoria() {
-		return lancamentoService.porCategoria(LocalDate.of(2018, Month.FEBRUARY, 1));
+		return lancamentoService.porCategoria(LocalDate.now().withMonth(2));
+	}
+
+	@GetMapping("/estatisticas/por-dia")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	public List<LancamentoEstatisticaDia> porDia() {
+		return lancamentoService.porDia(LocalDate.now().withMonth(1));
 	}
 
 	@PostMapping
