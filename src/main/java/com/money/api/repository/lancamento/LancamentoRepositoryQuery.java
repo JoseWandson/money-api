@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.money.api.dto.LancamentoEstatisticaCategoria;
 import com.money.api.dto.LancamentoEstatisticaDia;
+import com.money.api.dto.LancamentoEstatisticaPessoa;
 import com.money.api.model.Lancamento;
 import com.money.api.repository.filter.LancamentoFilter;
 import com.money.api.repository.projection.ResumoLancamento;
@@ -21,5 +22,7 @@ public interface LancamentoRepositoryQuery {
 	List<LancamentoEstatisticaCategoria> porCategoria(LocalDate mesReferencia);
 
 	List<LancamentoEstatisticaDia> porDia(LocalDate mesReferencia);
+
+	List<LancamentoEstatisticaPessoa> porPessoa(LocalDate inicio, LocalDate fim);
 
 }
