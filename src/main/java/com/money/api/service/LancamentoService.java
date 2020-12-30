@@ -1,7 +1,13 @@
 package com.money.api.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -12,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.money.api.dto.LancamentoEstatisticaCategoria;
 import com.money.api.dto.LancamentoEstatisticaDia;
+import com.money.api.dto.LancamentoEstatisticaPessoa;
 import com.money.api.model.Lancamento;
 import com.money.api.model.Lancamento_;
 import com.money.api.model.Pessoa;
@@ -20,6 +27,12 @@ import com.money.api.repository.PessoaRepository;
 import com.money.api.repository.filter.LancamentoFilter;
 import com.money.api.repository.projection.ResumoLancamento;
 import com.money.api.service.exception.PessoaInexistenteOuInativaException;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class LancamentoService {
@@ -68,6 +81,22 @@ public class LancamentoService {
 
 	public List<LancamentoEstatisticaDia> porDia(LocalDate mesReferencia) {
 		return lancamentoRepository.porDia(mesReferencia);
+	}
+
+	public byte[] relatorioPorPessoa(LocalDate inicio, LocalDate fim) throws IOException, JRException {
+		List<LancamentoEstatisticaPessoa> dados = lancamentoRepository.porPessoa(inicio, fim);
+
+		Map<String, Object> parametros = new HashMap<>();
+		parametros.put("DT_INICIO", Date.valueOf(inicio));
+		parametros.put("DT_FIM", Date.valueOf(fim));
+		parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
+
+		try (InputStream inputStream = getClass().getResourceAsStream("/relatorios/lancamentos-por-pessoa.jasper")) {
+			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
+					new JRBeanCollectionDataSource(dados));
+
+			return JasperExportManager.exportReportToPdf(jasperPrint);
+		}
 	}
 
 	private void validarPessoa(Lancamento lancamento) {
