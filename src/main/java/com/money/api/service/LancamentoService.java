@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.money.api.dto.LancamentoEstatisticaCategoria;
@@ -97,6 +98,11 @@ public class LancamentoService {
 
 			return JasperExportManager.exportReportToPdf(jasperPrint);
 		}
+	}
+
+	@Scheduled(cron = "0 0 6 * * *")
+	public void avisarSobreLancamentosVencidos() {
+		System.out.println(">>>>>>>>>>>>> Método sendo executado...");
 	}
 
 	private void validarPessoa(Lancamento lancamento) {
