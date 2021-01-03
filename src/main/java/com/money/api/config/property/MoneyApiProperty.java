@@ -12,12 +12,28 @@ public class MoneyApiProperty {
 	@Setter
 	private String originPermitida = "http://localhost:4200";
 
-	private final Seguranca seguranca = new Seguranca();
+	private final Seguranca seguranca;
+
+	private final Mail mail;
+
+	public MoneyApiProperty() {
+		seguranca = new Seguranca();
+		mail = new Mail();
+	}
 
 	@Getter
 	@Setter
 	public static class Seguranca {
 		private boolean enableHttps;
+	}
+
+	@Getter
+	@Setter
+	public static class Mail {
+		private String host;
+		private Integer port;
+		private String username;
+		private String password;
 	}
 
 }
