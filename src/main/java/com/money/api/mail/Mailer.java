@@ -1,6 +1,8 @@
 package com.money.api.mail;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -9,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import com.money.api.service.exception.MailerException;
 
@@ -17,6 +21,9 @@ public class Mailer {
 
 	@Autowired
 	private JavaMailSender mailSender;
+
+	@Autowired
+	private TemplateEngine thymeleaf;
 
 	public void enviarEmail(String remetente, List<String> destinatarios, String assunto, String mensagem) {
 		try {
@@ -32,6 +39,16 @@ public class Mailer {
 		} catch (MessagingException e) {
 			throw new MailerException("Problemas com o envio de e-mail!", e);
 		}
+	}
+
+	public void enviarEmail(String remetente, List<String> destinatarios, String assunto, String template,
+			Map<String, Object> variaveis) {
+		Context context = new Context(new Locale("pt", "BR"));
+
+		variaveis.entrySet().forEach(e -> context.setVariable(e.getKey(), e.getValue()));
+
+		String mensagem = thymeleaf.process(template, context);
+		enviarEmail(remetente, destinatarios, assunto, mensagem);
 	}
 
 }
