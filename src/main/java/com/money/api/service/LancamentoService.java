@@ -20,11 +20,14 @@ import org.springframework.stereotype.Service;
 import com.money.api.dto.LancamentoEstatisticaCategoria;
 import com.money.api.dto.LancamentoEstatisticaDia;
 import com.money.api.dto.LancamentoEstatisticaPessoa;
+import com.money.api.mail.Mailer;
 import com.money.api.model.Lancamento;
 import com.money.api.model.Lancamento_;
 import com.money.api.model.Pessoa;
+import com.money.api.model.Usuario;
 import com.money.api.repository.LancamentoRepository;
 import com.money.api.repository.PessoaRepository;
+import com.money.api.repository.UsuarioRepository;
 import com.money.api.repository.filter.LancamentoFilter;
 import com.money.api.repository.projection.ResumoLancamento;
 import com.money.api.service.exception.PessoaInexistenteOuInativaException;
@@ -38,11 +41,19 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 @Service
 public class LancamentoService {
 
+	private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
+
 	@Autowired
 	private LancamentoRepository lancamentoRepository;
 
 	@Autowired
 	private PessoaRepository pessoaRepository;
+
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+
+	@Autowired
+	private Mailer mailer;
 
 	public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		return lancamentoRepository.filtrar(lancamentoFilter, pageable);
@@ -102,7 +113,11 @@ public class LancamentoService {
 
 	@Scheduled(cron = "0 0 6 * * *")
 	public void avisarSobreLancamentosVencidos() {
-		System.out.println(">>>>>>>>>>>>> Método sendo executado...");
+		List<Lancamento> vencidos = lancamentoRepository
+				.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+		List<Usuario> destinatarios = usuarioRepository.findByPermissoesDescricao(DESTINATARIOS);
+
+		mailer.avisarSobreLancamentosVencidos(vencidos, destinatarios);
 	}
 
 	private void validarPessoa(Lancamento lancamento) {
