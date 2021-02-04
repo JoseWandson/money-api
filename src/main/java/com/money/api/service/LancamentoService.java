@@ -32,12 +32,14 @@ import com.money.api.repository.filter.LancamentoFilter;
 import com.money.api.repository.projection.ResumoLancamento;
 import com.money.api.service.exception.PessoaInexistenteOuInativaException;
 
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+@Slf4j
 @Service
 public class LancamentoService {
 
@@ -113,11 +115,26 @@ public class LancamentoService {
 
 	@Scheduled(cron = "0 0 6 * * *")
 	public void avisarSobreLancamentosVencidos() {
+		if (log.isDebugEnabled()) {
+			log.debug("Preparando envio de e-mails de aviso de lançamentos vencidos.");
+		}
+
 		List<Lancamento> vencidos = lancamentoRepository
 				.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+		if (vencidos.isEmpty()) {
+			log.info("Sem lançamentos vencidos para aviso.");
+			return;
+		}
+		log.info("Existem {} lançamentos vencidos.", vencidos.size());
+
 		List<Usuario> destinatarios = usuarioRepository.findByPermissoesDescricao(DESTINATARIOS);
+		if (destinatarios.isEmpty()) {
+			log.warn("Existem lançamentos vencidos, mas o sistema não encontrou destinatários.");
+			return;
+		}
 
 		mailer.avisarSobreLancamentosVencidos(vencidos, destinatarios);
+		log.info("Envio de e-mail de aviso concluído.");
 	}
 
 	private void validarPessoa(Lancamento lancamento) {
