@@ -1,8 +1,12 @@
 package com.money.api.dto;
 
+import java.util.List;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.money.api.model.Contato;
 import com.money.api.model.Endereco;
 
 import lombok.Getter;
@@ -19,5 +23,8 @@ public class PessoaDTO {
 
 	@NotNull
 	private Boolean ativo;
+
+	@Valid
+	private List<Contato> contatos;
 
 }
