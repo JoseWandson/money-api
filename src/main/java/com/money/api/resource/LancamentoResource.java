@@ -1,6 +1,8 @@
 package com.money.api.resource;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.money.api.dto.LancamentoDTO;
 import com.money.api.dto.LancamentoEstatisticaCategoria;
@@ -112,6 +115,16 @@ public class LancamentoResource {
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalva.getCodigo()));
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalva);
+	}
+
+	@PostMapping("/anexo")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
+	public String uploadAnexo(@RequestParam MultipartFile anexo) throws IOException {
+		try (OutputStream out = new FileOutputStream(
+				"C:\\Users\\Avell\\Desktop\\anexo--" + anexo.getOriginalFilename())) {
+			out.write(anexo.getBytes());
+		}
+		return "ok";
 	}
 
 	@DeleteMapping("/{codigo}")
