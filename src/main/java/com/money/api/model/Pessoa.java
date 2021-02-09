@@ -37,7 +37,7 @@ public class Pessoa {
 	private Boolean ativo;
 
 	@JsonIgnoreProperties("pessoa")
-	@OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
 	private List<Contato> contatos;
 
 	@Transient
