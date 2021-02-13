@@ -44,6 +44,7 @@ public class MoneyApiProperty {
 	public static class S3 {
 		private String accessKeyId;
 		private String secretAccessKey;
+		private String bucket = "jw-money-arquivos";
 	}
 
 }
