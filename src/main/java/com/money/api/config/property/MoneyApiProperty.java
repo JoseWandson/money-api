@@ -16,9 +16,12 @@ public class MoneyApiProperty {
 
 	private final Mail mail;
 
+	private final S3 s3;
+
 	public MoneyApiProperty() {
 		seguranca = new Seguranca();
 		mail = new Mail();
+		s3 = new S3();
 	}
 
 	@Getter
@@ -34,6 +37,13 @@ public class MoneyApiProperty {
 		private Integer port;
 		private String username;
 		private String password;
+	}
+
+	@Getter
+	@Setter
+	public static class S3 {
+		private String accessKeyId;
+		private String secretAccessKey;
 	}
 
 }
