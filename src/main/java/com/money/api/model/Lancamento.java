@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -56,6 +57,11 @@ public class Lancamento {
 	@JsonIgnoreProperties("contatos")
 	@JoinColumn(name = "codigo_pessoa")
 	private Pessoa pessoa;
+
+	private String anexo;
+
+	@Transient
+	private String urlAnexo;
 
 	@JsonIgnore
 	public boolean isReceita() {

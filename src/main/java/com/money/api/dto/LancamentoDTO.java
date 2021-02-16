@@ -39,4 +39,6 @@ public class LancamentoDTO {
 	@NotNull
 	private Pessoa pessoa;
 
+	private String anexo;
+
 }

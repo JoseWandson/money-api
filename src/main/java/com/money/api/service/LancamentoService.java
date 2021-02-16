@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.money.api.dto.LancamentoEstatisticaCategoria;
 import com.money.api.dto.LancamentoEstatisticaDia;
@@ -31,6 +32,7 @@ import com.money.api.repository.UsuarioRepository;
 import com.money.api.repository.filter.LancamentoFilter;
 import com.money.api.repository.projection.ResumoLancamento;
 import com.money.api.service.exception.PessoaInexistenteOuInativaException;
+import com.money.api.storage.S3;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -57,6 +59,9 @@ public class LancamentoService {
 	@Autowired
 	private Mailer mailer;
 
+	@Autowired
+	private S3 s3;
+
 	public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		return lancamentoRepository.filtrar(lancamentoFilter, pageable);
 	}
@@ -69,8 +74,13 @@ public class LancamentoService {
 		return lancamentoRepository.findById(codigo);
 	}
 
-	public Lancamento criar(Lancamento lancamento) {
+	public Lancamento salvar(Lancamento lancamento) {
 		validarPessoa(lancamento);
+
+		if (StringUtils.hasText(lancamento.getAnexo())) {
+			s3.salvar(lancamento.getAnexo());
+		}
+
 		return lancamentoRepository.save(lancamento);
 	}
 

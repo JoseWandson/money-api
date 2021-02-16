@@ -113,7 +113,7 @@ public class LancamentoResource {
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Lancamento> criar(@Valid @RequestBody LancamentoDTO lancamentoDTO,
 			HttpServletResponse response) {
-		Lancamento lancamentoSalva = lancamentoService.criar(modelMapper.map(lancamentoDTO, Lancamento.class));
+		Lancamento lancamentoSalva = lancamentoService.salvar(modelMapper.map(lancamentoDTO, Lancamento.class));
 
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalva.getCodigo()));
 
