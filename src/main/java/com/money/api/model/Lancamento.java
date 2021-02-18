@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.money.api.repository.listener.LancamentoAnexoListener;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,6 +28,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "lancamento")
+@EntityListeners(LancamentoAnexoListener.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Lancamento {
 
