@@ -41,4 +41,6 @@ public class LancamentoDTO {
 
 	private String anexo;
 
+	private String urlAnexo;
+
 }

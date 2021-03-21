@@ -1,6 +1,7 @@
 package com.money.api.repository.listener;
 
 import javax.persistence.PostLoad;
+import javax.persistence.PostUpdate;
 
 import org.springframework.util.StringUtils;
 
@@ -11,6 +12,7 @@ import com.money.api.storage.S3;
 public class LancamentoAnexoListener {
 
 	@PostLoad
+	@PostUpdate
 	public void postLoad(Lancamento lancamento) {
 		if (StringUtils.hasText(lancamento.getAnexo())) {
 			S3 s3 = MoneyApiApplication.getBean(S3.class);
