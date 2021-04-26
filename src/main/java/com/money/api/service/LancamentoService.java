@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -155,8 +156,12 @@ public class LancamentoService {
 	}
 
 	private void validarPessoa(Lancamento lancamento) {
-		Optional<Pessoa> pessoaOptional = pessoaRepository.findById(lancamento.getPessoa().getCodigo());
-		if (!pessoaOptional.isPresent() || pessoaOptional.get().isInativo()) {
+		Pessoa pessoa = null;
+		if (Objects.nonNull(lancamento.getPessoa().getCodigo())) {
+			pessoa = pessoaRepository.getOne(lancamento.getPessoa().getCodigo());
+		}
+
+		if (Objects.isNull(pessoa) || pessoa.isInativo()) {
 			throw new PessoaInexistenteOuInativaException();
 		}
 	}
