@@ -1,7 +1,6 @@
 package com.money.api.service;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -39,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Slf4j
@@ -90,7 +88,7 @@ public class LancamentoService {
 	}
 
 	public Lancamento atualizar(Long codigo, Lancamento lancamento) {
-		Lancamento lancamentoSalvo = buscarPeloCodigo(codigo).orElseThrow(IllegalArgumentException::new);
+		var lancamentoSalvo = buscarPeloCodigo(codigo).orElseThrow(IllegalArgumentException::new);
 		if (!lancamento.getPessoa().equals(lancamentoSalvo.getPessoa())) {
 			validarPessoa(lancamento);
 		}
@@ -123,8 +121,8 @@ public class LancamentoService {
 		parametros.put("DT_FIM", Date.valueOf(fim));
 		parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
 
-		try (InputStream inputStream = getClass().getResourceAsStream("/relatorios/lancamentos-por-pessoa.jasper")) {
-			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
+		try (var inputStream = getClass().getResourceAsStream("/relatorios/lancamentos-por-pessoa.jasper")) {
+			var jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
 					new JRBeanCollectionDataSource(dados));
 
 			return JasperExportManager.exportReportToPdf(jasperPrint);
@@ -156,12 +154,12 @@ public class LancamentoService {
 	}
 
 	private void validarPessoa(Lancamento lancamento) {
-		Pessoa pessoa = null;
-		if (Objects.nonNull(lancamento.getPessoa().getCodigo())) {
-			pessoa = pessoaRepository.getOne(lancamento.getPessoa().getCodigo());
+		if (Objects.isNull(lancamento.getPessoa().getCodigo())) {
+			return;
 		}
 
-		if (Objects.isNull(pessoa) || pessoa.isInativo()) {
+		Optional<Pessoa> pessoaOptional = pessoaRepository.findById(lancamento.getPessoa().getCodigo());
+		if (!pessoaOptional.isPresent() || pessoaOptional.get().isInativo()) {
 			throw new PessoaInexistenteOuInativaException();
 		}
 	}
