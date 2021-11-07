@@ -1,5 +1,7 @@
 package com.money.api.config.property;
 
+import java.util.List;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Getter;
@@ -27,7 +29,8 @@ public class MoneyApiProperty {
 	@Getter
 	@Setter
 	public static class Seguranca {
-		private boolean enableHttps;
+		private List<String> redirectsPermitidos;
+		private String authServerUrl;
 	}
 
 	@Getter

@@ -46,8 +46,8 @@ public class CategoriaResource {
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Categoria> criar(@Valid @RequestBody CategoriaDTO categoriaDTO,
 			HttpServletResponse response) {
-		Categoria categoria = modelMapper.map(categoriaDTO, Categoria.class);
-		Categoria categoriaSalva = categoriaRepository.save(categoria);
+		var categoria = modelMapper.map(categoriaDTO, Categoria.class);
+		var categoriaSalva = categoriaRepository.save(categoria);
 
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getCodigo()));
 

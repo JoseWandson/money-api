@@ -35,7 +35,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
 	@Override
 	public Page<Lancamento> filtrar(LancamentoFilter lancamentoFilter, Pageable pageable) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		var builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Lancamento> criteria = builder.createQuery(Lancamento.class);
 		Root<Lancamento> root = criteria.from(Lancamento.class);
 
@@ -50,7 +50,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
 	@Override
 	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		var builder = manager.getCriteriaBuilder();
 		CriteriaQuery<ResumoLancamento> criteria = builder.createQuery(ResumoLancamento.class);
 		Root<Lancamento> root = criteria.from(Lancamento.class);
 
@@ -70,7 +70,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
 	@Override
 	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate mesReferencia) {
-		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		var criteriaBuilder = manager.getCriteriaBuilder();
 		CriteriaQuery<LancamentoEstatisticaCategoria> criteriaQuery = criteriaBuilder
 				.createQuery(LancamentoEstatisticaCategoria.class);
 		Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
@@ -91,7 +91,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
 	@Override
 	public List<LancamentoEstatisticaDia> porDia(LocalDate mesReferencia) {
-		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		var criteriaBuilder = manager.getCriteriaBuilder();
 		CriteriaQuery<LancamentoEstatisticaDia> criteriaQuery = criteriaBuilder
 				.createQuery(LancamentoEstatisticaDia.class);
 		Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
@@ -114,7 +114,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
 	@Override
 	public List<LancamentoEstatisticaPessoa> porPessoa(LocalDate inicio, LocalDate fim) {
-		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		var criteriaBuilder = manager.getCriteriaBuilder();
 		CriteriaQuery<LancamentoEstatisticaPessoa> criteriaQuery = criteriaBuilder
 				.createQuery(LancamentoEstatisticaPessoa.class);
 		Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
@@ -162,7 +162,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 	}
 
 	private Long total(LancamentoFilter lancamentoFilter) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		var builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
 		Root<Lancamento> root = criteria.from(Lancamento.class);
 

@@ -36,8 +36,10 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		String mensagemUsuario = messageSource.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
-		String mensagemDesenvolvedor = Optional.ofNullable(ex.getCause()).orElse(ex).toString();
+		var mensagemDesenvolvedor = Optional.ofNullable(ex.getCause()).orElse(ex).toString();
+
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
+
 		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
 	}
 
@@ -53,7 +55,7 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler {
 			WebRequest request) {
 		String mensagemUsuario = messageSource.getMessage("recurso.nao-encontrado", null,
 				LocaleContextHolder.getLocale());
-		String mensagemDesenvolvedor = ex.toString();
+		var mensagemDesenvolvedor = ex.toString();
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 	}
@@ -73,7 +75,7 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
 		for (FieldError fieldError : bindingResult.getFieldErrors()) {
 			String mensagemUsuario = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
-			String mensagemDesenvolvedor = fieldError.toString();
+			var mensagemDesenvolvedor = fieldError.toString();
 			erros.add(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		}
 

@@ -90,13 +90,13 @@ public class LancamentoResource {
 	@GetMapping("/estatisticas/por-categoria")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public List<LancamentoEstatisticaCategoria> porCategoria() {
-		return lancamentoService.porCategoria(LocalDate.now().withMonth(2));
+		return lancamentoService.porCategoria(LocalDate.now().minusMonths(3));
 	}
 
 	@GetMapping("/estatisticas/por-dia")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public List<LancamentoEstatisticaDia> porDia() {
-		return lancamentoService.porDia(LocalDate.now().withMonth(1));
+		return lancamentoService.porDia(LocalDate.now().minusMonths(3));
 	}
 
 	@GetMapping("/relatorios/por-pessoa")
@@ -113,7 +113,7 @@ public class LancamentoResource {
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Lancamento> criar(@Valid @RequestBody LancamentoDTO lancamentoDTO,
 			HttpServletResponse response) {
-		Lancamento lancamentoSalva = lancamentoService.salvar(modelMapper.map(lancamentoDTO, Lancamento.class));
+		var lancamentoSalva = lancamentoService.salvar(modelMapper.map(lancamentoDTO, Lancamento.class));
 
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalva.getCodigo()));
 
@@ -139,7 +139,7 @@ public class LancamentoResource {
 	public ResponseEntity<Lancamento> atualizar(@PathVariable Long codigo,
 			@Valid @RequestBody LancamentoDTO lancamentoDTO) {
 		try {
-			Lancamento lancamento = modelMapper.map(lancamentoDTO, Lancamento.class);
+			var lancamento = modelMapper.map(lancamentoDTO, Lancamento.class);
 			return ResponseEntity.ok(lancamentoService.atualizar(codigo, lancamento));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.notFound().build();
@@ -150,7 +150,7 @@ public class LancamentoResource {
 	public ResponseEntity<Object> handlePessoaInexistenteOuInativaException(PessoaInexistenteOuInativaException ex) {
 		String mensagemUsuario = messageSource.getMessage("pessoa.inexistente-ou-inativa", null,
 				LocaleContextHolder.getLocale());
-		String mensagemDesenvolvedor = ex.toString();
+		var mensagemDesenvolvedor = ex.toString();
 		List<Erro> erros = Arrays.asList(new Erro(mensagemUsuario, mensagemDesenvolvedor));
 		return ResponseEntity.badRequest().body(erros);
 	}
