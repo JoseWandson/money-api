@@ -1,5 +1,11 @@
 package com.money.api.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,9 +42,7 @@ import com.money.api.config.property.MoneyApiProperty;
 import com.money.api.security.UsuarioSistema;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
@@ -99,10 +104,16 @@ public class AuthServerConfig {
 	}
 
 	@Bean
-	public JWKSet jwkSet() throws JOSEException {
-		RSAKey rsa = new RSAKeyGenerator(2048).keyUse(KeyUse.SIGNATURE).keyID(UUID.randomUUID().toString()).generate();
+	public JWKSet jwkSet()
+			throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException, JOSEException {
+		final InputStream inputStream = new ClassPathResource("keystore/money.jks").getInputStream();
 
-		return new JWKSet(rsa);
+		final KeyStore keyStore = KeyStore.getInstance("JKS");
+		keyStore.load(inputStream, "123456".toCharArray());
+
+		RSAKey rsaKey = RSAKey.load(keyStore, "money", "123456".toCharArray());
+
+		return new JWKSet(rsaKey);
 	}
 
 	@Bean
