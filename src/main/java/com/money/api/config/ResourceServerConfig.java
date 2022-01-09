@@ -5,9 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,6 +24,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.money.api.config.property.MoneyApiProperty;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
@@ -37,9 +40,21 @@ public class ResourceServerConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, MoneyApiProperty moneyApiProperty)
+			throws Exception {
 		http.authorizeRequests().antMatchers("/categorias").permitAll().anyRequest().authenticated().and().csrf()
 				.disable().oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
+
+		http.logout(logoutConfig -> logoutConfig.logoutSuccessHandler((request, response, authentication) -> {
+			String returnTo = request.getParameter("returnTo");
+
+			if (StringUtils.isBlank(returnTo)) {
+				returnTo = moneyApiProperty.getSeguranca().getAuthServerUrl();
+			}
+
+			response.setStatus(HttpStatus.FOUND.value());
+			response.sendRedirect(returnTo);
+		}));
 
 		return http.formLogin(Customizer.withDefaults()).build();
 	}
